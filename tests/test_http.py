@@ -1,6 +1,5 @@
 from contextlib import suppress
 import pytest
-import pytest_httpbin
 import requests
 from tdoptions import http
 
