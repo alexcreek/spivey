@@ -17,12 +17,14 @@ def get(*args, **kwargs):
     while retries > 0:
         try:
             resp = requests.get(*args, **kwargs)
-            resp.raise_for_status() # Raise HTTPError for 4xx and 5xx responses
+            if is_ok(resp):
+                break
         except (requests.exceptions.Timeout, requests.exceptions.HTTPError) as e:
             #TODO use a logger
             print(e)
             if retries == 1:
                 sys.exit(1)
+            print('Retrying request')
         retries -= 1
         backoff += 1
         sleep(backoff)
@@ -43,13 +45,31 @@ def post(*args, **kwargs):
     while retries > 0:
         try:
             resp = requests.post(*args, **kwargs)
-            resp.raise_for_status() # Raise HTTPError for 4xx and 5xx responses
+            if is_ok(resp):
+                break
         except (requests.exceptions.Timeout, requests.exceptions.HTTPError) as e:
             #TODO use a logger
             print(e)
             if retries == 1:
                 sys.exit(1)
+            print('Retrying request')
         retries -= 1
         backoff += 1
         sleep(backoff)
     return resp
+
+def is_ok(resp):
+    """
+    Check a requests.models.response for a bad status code
+
+    :param resp: response to check
+    :return: True if the status_code is normal
+    :rtype: boolean
+    :raises HTTPError: if the status code is 5xx or 429
+    """
+
+    bad_status_codes = [429, 500, 501, 502, 503, 504, 505, 507, 508, 510, 511]
+    if resp.status_code in bad_status_codes:
+        msg = f'{resp.status_code} Error for url: {resp.url}'
+        raise requests.exceptions.HTTPError(msg)
+    return True
