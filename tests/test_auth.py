@@ -9,6 +9,15 @@ class MockResponse:
     def json():
         return {'access_token': 'asdf'}
 
+@pytest.fixture
+def mock_token(monkeypatch):
+    def mock_post(*args, **kwargs):
+        return MockResponse()
+
+    monkeypatch.setattr(requests, "post", mock_post)
+    monkeypatch.setenv('CLIENT_ID', 'asdf')
+    monkeypatch.setenv('REFRESH_TOKEN', 'asdf')
+
 
 class TestAuth:
     def test_missing_refresh_token(self, monkeypatch):
@@ -29,24 +38,10 @@ class TestAuth:
             a = Auth()
             a.header()
 
-    def test_token_as_a_header(self, monkeypatch):
-        def mock_post(*args, **kwargs):
-            return MockResponse()
-
-        monkeypatch.setattr(requests, "post", mock_post)
-        monkeypatch.setenv('CLIENT_ID', 'asdf')
-        monkeypatch.setenv('REFRESH_TOKEN', 'asdf')
-
+    def test_token_as_a_header(self, monkeypatch, mock_token):
         a = Auth()
         assert a.header() == {'Authorization': 'Bearer asdf'}
 
-    def test_token_as_a_string(self, monkeypatch):
-        def mock_post(*args, **kwargs):
-            return MockResponse()
-
-        monkeypatch.setattr(requests, "post", mock_post)
-        monkeypatch.setenv('CLIENT_ID', 'asdf')
-        monkeypatch.setenv('REFRESH_TOKEN', 'asdf')
-
+    def test_token_as_a_string(self, monkeypatch, mock_token):
         a = Auth()
         assert a.token() == 'asdf'
