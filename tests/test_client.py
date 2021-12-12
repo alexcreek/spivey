@@ -14,12 +14,14 @@ class MockResponse():
     def json(self):
         return self.params
 
+
 class MockUnderlyingResponse():
     status_code = 200
 
     @staticmethod
     def json():
         return {'SPY': {'lastPrice': '123.0'}}
+
 
 @pytest.fixture
 def echo_get_params(monkeypatch):
@@ -28,6 +30,7 @@ def echo_get_params(monkeypatch):
     """
     def mock_get(*args, **kwargs):
         return MockResponse(*args, **kwargs)
+
     monkeypatch.setattr(requests, "get", mock_get)
 
 @pytest.fixture
@@ -37,9 +40,11 @@ def disable_auth(monkeypatch):
     """
     def mock_token(*args, **kwargs):
         return 'asdf'
+
     monkeypatch.setattr(tdoptions.auth.Auth, "token", mock_token)
     monkeypatch.setenv('CLIENT_ID', 'asdf')
     monkeypatch.setenv('REFRESH_TOKEN', 'asdf')
+
 
 ### Tests
 class TestOptions:
@@ -71,6 +76,7 @@ class TestOptions:
         c = Client()
         assert isinstance(c.options('spy', 7), dict)
 
+
 class TestUnderlying:
     def test_invalid_json(self, disable_auth, httpbin, monkeypatch):
         monkeypatch.setenv('TD_URL', f'{httpbin.url}/html')
@@ -81,6 +87,7 @@ class TestUnderlying:
     def test_success(self, disable_auth, monkeypatch):
         def mock_get(*args, **kwargs):
             return MockUnderlyingResponse()
+
         monkeypatch.setattr(requests, 'get', mock_get)
         c = Client()
         assert c.underlying('spy') == 123.0

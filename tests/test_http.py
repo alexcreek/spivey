@@ -15,6 +15,7 @@ def mock_504():
     r.status_code = 504
     return r
 
+
 class TestGet:
     def test_timing_out(self):
         with pytest.raises(SystemExit):
@@ -38,6 +39,7 @@ class TestGet:
         print(http.get(f'{httpbin.url}/status/200'))
         assert capsys.readouterr().out.count('<Response [200]>') == 1
 
+
 class TestPost:
     def test_timing_out(self):
         with pytest.raises(SystemExit):
@@ -60,6 +62,7 @@ class TestPost:
     def test_successful_request(self, httpbin, capsys):
         print(http.post(f'{httpbin.url}/status/200'))
         assert capsys.readouterr().out.count('<Response [200]>') == 1
+
 
 class TestIsOk:
     def test_good_status_code(self, mock_200):
