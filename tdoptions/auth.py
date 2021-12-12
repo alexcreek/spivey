@@ -47,5 +47,4 @@ class Auth():
         :return: HTTP Authorization header
         :rtype: dict
         """
-
         return {'Authorization': 'Bearer ' + self.token()}
