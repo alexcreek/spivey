@@ -49,8 +49,26 @@ class Client():
         return output
 
 
-    def underlying(self, **kwargs):
+    def underlying(self, ticker):
         """
         Fetch the price for an option's underlying asset
+
+        :param ticker: Ticker of the asset
+        :return: lastPrice of the asset
+        :rtype: dict
         """
-        pass
+
+        ticker = ticker.upper()
+        headers = self.auth.header()
+        r = http.get(f'{self.url}/{ticker}/quotes', headers=headers, timeout=self.timeout)
+
+        try:
+            output = r.json()
+        except JSONDecodeError:
+            print(f'Caught JSONDecodeError: response contained invalid json - {r.text}')
+            sys.exit(1)
+
+        if ticker in output.keys():
+            return float(output[ticker]['lastPrice'])
+        print(f'No data found for {ticker}')
+        return float(-1.0)
