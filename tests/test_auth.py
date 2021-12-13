@@ -1,6 +1,6 @@
 import pytest
 import requests
-from tdoptions.auth import Auth
+from spivey.auth import Auth
 
 class MockResponse:
     status_code = 200

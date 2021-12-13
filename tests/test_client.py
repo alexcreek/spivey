@@ -1,8 +1,8 @@
 from datetime import datetime as dt
 import pytest
 import requests
-import tdoptions.auth
-from tdoptions import Client
+import spivey.auth
+from spivey import Client
 
 ### Fixtures
 class MockResponse():
@@ -41,7 +41,7 @@ def disable_auth(monkeypatch):
     def mock_token(*args, **kwargs):
         return 'asdf'
 
-    monkeypatch.setattr(tdoptions.auth.Auth, "token", mock_token)
+    monkeypatch.setattr(spivey.auth.Auth, "token", mock_token)
     monkeypatch.setenv('CLIENT_ID', 'asdf')
     monkeypatch.setenv('REFRESH_TOKEN', 'asdf')
 
