@@ -1,7 +1,7 @@
 from contextlib import suppress
 import pytest
 import requests
-from tdoptions import http
+from spivey import http
 
 @pytest.fixture
 def mock_200():
