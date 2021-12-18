@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+from datetime import timezone, timedelta
 import pytest
 import requests
 from spivey.auth import Auth
@@ -7,7 +9,8 @@ class MockResponse:
 
     @staticmethod
     def json():
-        return {'access_token': 'asdf'}
+        return {'access_token': 'asdf',
+                'expires_in': 999}
 
 @pytest.fixture
 def mock_token(monkeypatch):
@@ -38,10 +41,21 @@ class TestAuth:
             a = Auth()
             a.header()
 
-    def test_token_as_a_header(self, monkeypatch, mock_token):
+    def test_token_as_a_header(self, mock_token):
         a = Auth()
         assert a.header() == {'Authorization': 'Bearer asdf'}
 
-    def test_token_as_a_string(self, monkeypatch, mock_token):
+    def test_token_as_a_string(self, mock_token):
         a = Auth()
+        assert a.token() == 'asdf'
+
+    def test_ttl_being_valid(self, monkeypatch, mock_token):
+        a = Auth()
+        monkeypatch.setattr(a, 'ttl', dt.now(timezone.utc) + timedelta(minutes=10))
+        monkeypatch.setattr(a, '_token', 'aaa')
+        assert a.token() == 'aaa'
+
+    def test_ttl_being_expired(self, monkeypatch, mock_token):
+        a = Auth()
+        monkeypatch.setattr(a, 'ttl', dt.now(timezone.utc) - timedelta(minutes=10))
         assert a.token() == 'asdf'
