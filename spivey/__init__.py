@@ -71,4 +71,4 @@ class Client():
         if ticker in output.keys():
             return float(output[ticker]['lastPrice'])
         print(f'No data found for {ticker}')
-        return float(-1.0)
+        return None
