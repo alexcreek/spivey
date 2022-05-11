@@ -44,6 +44,7 @@ def disable_auth(monkeypatch):
     monkeypatch.setattr(spivey.auth.Auth, "token", mock_token)
     monkeypatch.setenv('CLIENT_ID', 'asdf')
     monkeypatch.setenv('REFRESH_TOKEN', 'asdf')
+    monkeypatch.setenv('TD_ACCOUNT_ID', 'asdf')
 
 
 ### Tests
