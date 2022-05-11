@@ -16,7 +16,7 @@ class Client():
         self.timeout = int(os.getenv('TD_TIMEOUT', '30'))
 
         try:
-            account_id = os.environ['TD_ACCOUNT_ID']
+            account_id = os.environ['TD_ACCOUNT_ID'] # Your account number without the trailing TDA
         except KeyError as e:
             print(f'{e} environment variable not found')
             sys.exit(1)
@@ -157,3 +157,15 @@ class Client():
         r = http.post(url=self.order_url, headers=self.auth.header(), json=payload,
             timeout=self.timeout)
         return bool(r.status_code == 201)
+
+    @staticmethod
+    def to_full_symbol(ticker, exp, putCall, strike):
+        d = dt.strptime(exp, '%d %b %y')
+        if 'call' in putCall.lower():
+            t = 'C'
+        elif 'put' in putCall.lower():
+            t = 'P'
+        # else wtf man
+        # TODO raise exception
+
+        return f"{ticker.upper()}_{dt.strftime(d, '%m%d%y')}{t}{int(strike)}"
