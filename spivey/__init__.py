@@ -62,7 +62,7 @@ class Client():
 
         :param ticker: Ticker of the asset
         :return: lastPrice of the asset
-        :rtype: dict
+        :rtype: float
         """
 
         ticker = ticker.upper()
@@ -84,7 +84,6 @@ class Client():
         """
         Execute a One-Cancels-the-Other Buy order.
 
-        :param auth_header: Bearer token in header format.
         :param capital: The amount of capital to use for the order.
         :param symbol: The contract's full symbol.
         :param price: The price to purchase the contract at.
