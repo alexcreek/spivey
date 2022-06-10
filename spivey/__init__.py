@@ -3,6 +3,7 @@ import sys
 from datetime import datetime as dt
 from datetime import timedelta
 from json import JSONDecodeError
+from dateutil.parser import parse
 from .auth import Auth
 from . import http
 
@@ -159,7 +160,7 @@ class Client():
 
     @staticmethod
     def to_full_symbol(ticker, exp, putCall, strike):
-        d = dt.strptime(exp, '%d %b %y')
+        d = parse(exp)
         if 'call' in putCall.lower():
             t = 'C'
         elif 'put' in putCall.lower():
